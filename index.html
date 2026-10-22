@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TempleN</title>
+    <style>
+      * {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+        cursor: default;
+        font-family: inherit;
+        touch-action: manipulation;
+      }
+
+      body {
+        background-color: #0f141c;
+        color: #333;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        min-height: 100dvh;
+        overflow: hidden;
+      }
+
+      .scene {
+        background: #181f29;
+        width: 100%;
+        max-width: 600px;
+        min-height: 540px;
+        height: 90vh;
+        height: 90dvh;
+        border-radius: 15px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 30px;
+        box-sizing: border-box;
+        position: relative;
+        transition: all 0.5s ease;
+        border: 2px solid #3a4a60;
+        overflow: hidden;
+      }
+
+      #exterior {
+        background: linear-gradient(135deg, #1e293b, #0f172a);
+        color: white;
+      }
+
+      .cloud {
+        position: absolute;
+        width: 160px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.35);
+        border-radius: 25px;
+        filter: blur(6px);
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .cloud::before {
+        content: '';
+        position: absolute;
+        top: -22px;
+        left: 25px;
+        width: 65px;
+        height: 65px;
+        background: rgba(255, 255, 255, 0.38);
+        border-radius: 30%;
+      }
+
+      .cloud::after {
+        content: '';
+        position: absolute;
+        top: -32px;
+        right: 25px;
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.42);
+        border-radius: 50%;
+      }
+
+      .cloud-puffs {
+        position: absolute;
+        top: -15px;
+        left: 15px;
+        width: 45px;
+        height: 45px;
+        background: rgba(255, 255, 255, 0.32);
+        border-radius: 50%;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      .cloud-top {
+        top: 14%;
+        left: 15%;
+        animation: panCloudTop 16s ease-in-out infinite;
+      }
+
+      @keyframes panCloudTop {
+        0% { transform: translateX(-20px) translateY(0px) scale(1); opacity: 0.8; }
+        50% { transform: translateX(30px) translateY(-6px) scale(1.04); opacity: 1; }
+        100% { transform: translateX(-20px) translateY(0px) scale(1); opacity: 0.8; }
+      }
+
+      .cloud-bottom {
+        bottom: 12%;
+        right: 15%;
+        animation: panCloudBottom 18s ease-in-out infinite;
+      }
+
+      @keyframes panCloudBottom {
+        0% { transform: translateX(20px) translateY(0px) scale(1); opacity: 0.75; }
+        50% { transform: translateX(-35px) translateY(8px) scale(1.06); opacity: 0.95; }
+        100% { transform: translateX(20px) translateY(0px) scale(1); opacity: 0.75; }
+      }
+
+      .temple-house {
+        position: relative;
+        width: 380px;
+        max-width: 100%;
+        height: 420px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        animation: floatShrine 5s ease-in-out infinite;
+        z-index: 1;
+      }
+
+      @keyframes floatShrine {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-12px); }
+        100% { transform: translateY(0px); }
+      }
+
+      .roof-wrapper {
+        position: relative;
+        width: 380px;
+        max-width: 100%;
+        height: 105px;
+        z-index: 2;
+        flex-shrink: 0;
+      }
+
+      .temple-roof {
+        width: 0;
+        height: 0;
+        border-left: 190px solid transparent;
+        border-right: 190px solid transparent;
+        border-bottom: 95px solid #3b485d;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        filter: drop-shadow(0 10px 12px rgba(0,0,0,0.7));
+        z-index: 2;
+      }
+
+      .roof-base {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 380px;
+        max-width: 100%;
+        height: 12px;
+        background: linear-gradient(to bottom, #d4af37, #9c7b2c);
+        border-bottom: 2px solid #1a2230;
+        border-radius: 2px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+        z-index: 3;
+      }
+
+      .temple-body {
+        width: 290px;
+        max-width: 100%;
+        height: 310px;
+        background: #231f20;
+        border: 6px solid #c5a059;
+        border-top: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        padding-bottom: 25px;
+        box-shadow: 0 20px 35px rgba(0,0,0,0.85), inset 0 10px 15px rgba(0,0,0,0.5);
+        position: relative;
+        z-index: 1;
+        margin-top: -5px;
+      }
+
+      .temple-plaque {
+        position: absolute;
+        top: 22px;
+        width: 75px;
+        height: 28px;
+        background: linear-gradient(135deg, #d4af37, #9c7b2c);
+        border: 2px solid #1a2230;
+        border-radius: 4px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+        z-index: 4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #2d2410;
+        font-weight: bold;
+        font-size: 1.3em;
+        text-shadow: -1px -1px 0px rgba(255, 255, 255, 0.5), 1px 1px 0px rgba(0, 0, 0, 0.7);
+      }
+
+      .temple-gate {
+        background: #111;
+        border: 4px solid #c5a059;
+        width: 120px;
+        height: 195px;
+        border-radius: 6px 6px 0 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
+        transition: transform 0.3s, box-shadow 0.3s;
+        position: relative;
+      }
+
+      .temple-gate:hover {
+        transform: scale(1.05);
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.9), 0 0 20px rgba(197, 160, 89, 0.5);
+      }
+
+      .gate-knocker-left,
+      .gate-knocker-right {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 18px;
+        height: 18px;
+        background: linear-gradient(135deg, #d4af37, #9c7b2c);
+        border-radius: 50%;
+        border: 2px solid #1a1a1a;
+        box-shadow: 0 3px 5px rgba(0,0,0,0.6);
+      }
+      .gate-knocker-left { left: 15px; }
+      .gate-knocker-right { right: 15px; }
+
+      #interior {
+        display: none;
+        background: #1a2230;
+        border: 8px solid #c5a059;
+        color: #fff;
+        justify-content: space-between;
+      }
+
+      .art-frame-container {
+        width: 240px;
+        max-width: 100%;
+        height: 140px;
+        background: radial-gradient(circle, #27364b 0%, #070c14 100%);
+        border: 6px solid #e0be75;
+        border-radius: 6px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.9), inset 0 0 25px rgba(0,0,0,0.95);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        margin: 0 auto;
+        overflow: hidden;
+      }
+
+      .peaceful-aura {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        background: radial-gradient(circle, rgba(255, 215, 80, 0.35) 0%, rgba(212, 175, 55, 0.12) 60%, transparent 100%);
+        border-radius: 40%;
+        filter: blur(8px);
+        animation: peacefulAuraPulse 3.5s ease-in-out infinite;
+      }
+
+      @keyframes peacefulAuraPulse {
+        0% { transform: scale(0.85); opacity: 0.5; }
+        50% { transform: scale(1.15); opacity: 0.85; }
+        100% { transform: scale(0.85); opacity: 0.5; }
+      }
+
+      .peaceful-aura.active-sensing {
+        animation: auraSense 0.8s ease-in-out;
+      }
+
+      @keyframes auraSense {
+        0% { transform: scale(1); filter: blur(8px); opacity: 0.85; }
+        50% { transform: scale(1.25); filter: blur(4px); background: radial-gradient(circle, rgba(255, 240, 180, 0.75) 0%, rgba(255, 215, 80, 0.4) 65%, transparent 100%); }
+        100% { transform: scale(1); filter: blur(8px); opacity: 0.85; }
+      }
+
+      .aura-area {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: -10px;
+        z-index: 3;
+        height: 50px;
+      }
+
+      .incense-burner {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 12px;
+      }
+
+      .burner-rim {
+        width: 50px;
+        height: 8px;
+        background: linear-gradient(135deg, #e0be75, #9c7b2c);
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        position: relative;
+        z-index: 2;
+      }
+
+      .burner-body {
+        width: 42px;
+        height: 22px;
+        background: linear-gradient(135deg, #2c3542, #151b22);
+        border: 2px solid #c5a059;
+        border-top: none;
+        border-radius: 0 0 22px 22px;
+        box-shadow: inset 0 -4px 6px rgba(0,0,0,0.8), 0 3px 6px rgba(0,0,0,0.4);
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .burner-feet {
+        display: flex;
+        gap: 22px;
+        margin-top: -2px;
+      }
+
+      .burner-foot {
+        width: 4px;
+        height: 5px;
+        background: #9c7b2c;
+        border-radius: 0 0 2px 2px;
+      }
+
+      .hidden-glow-source {
+        position: absolute;
+        top: 2px;
+        width: 30px;
+        height: 10px;
+        background: radial-gradient(ellipse at center, rgba(212, 175, 55, 0.95) 0%, transparent 70%);
+        border-radius: 50%;
+        filter: blur(2px);
+        animation: glowPulse 2.5s infinite ease-in-out;
+        z-index: 3;
+      }
+
+      @keyframes glowPulse {
+        0% { opacity: 0.6; transform: scale(0.9); }
+        50% { opacity: 1; transform: scale(1.25); }
+        100% { opacity: 0.6; transform: scale(0.9); }
+      }
+
+      .hidden-glow-source.active-sensing {
+        animation: burnerSense 0.8s ease-in-out;
+      }
+
+      @keyframes burnerSense {
+        0% { opacity: 0.6; transform: scale(0.9); filter: blur(2px); }
+        50% { opacity: 1; transform: scale(1.4); filter: blur(1px); background: radial-gradient(ellipse at center, rgba(255, 240, 180, 1) 0%, rgba(212, 175, 55, 0.9) 70%, transparent 100%); }
+        100% { opacity: 0.6; transform: scale(0.9); filter: blur(2px); }
+      }
+
+      .aura-smoke-container {
+        position: absolute;
+        bottom: 25px;
+        width: 70px;
+        height: 40px;
+        pointer-events: none;
+      }
+
+      .smoke-particle {
+        position: absolute;
+        bottom: 0;
+        left: 33px;
+        width: 4px;
+        height: 28px;
+        background: linear-gradient(to top, rgba(255, 252, 242, 0.85), rgba(255, 252, 242, 0.1) 70%, transparent 100%);
+        border-radius: 2px;
+        filter: blur(2px);
+        animation: riseAuraSmoke 2.6s infinite linear;
+      }
+      .smoke-particle:nth-child(2) { animation-delay: 0.65s; left: 31px; width: 3px; height: 25px; }
+      .smoke-particle:nth-child(3) { animation-delay: 1.3s; left: 35px; width: 5px; height: 32px; }
+      .smoke-particle:nth-child(4) { animation-delay: 1.95s; left: 33px; width: 4px; height: 26px; }
+
+      @keyframes riseAuraSmoke {
+        0% { transform: translateY(0) scaleX(1) scaleY(0.7); opacity: 0.8; }
+        50% { transform: translateY(-28px) scaleX(1.1) scaleY(1.2); opacity: 0.45; }
+        100% { transform: translateY(-55px) scaleX(1.3) scaleY(1.6); opacity: 0; }
+      }
+
+      .interaction-area {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-top: 5px;
+        position: relative;
+      }
+
+      .btn {
+        background-color: #c5a059;
+        color: #1a1a1a;
+        border: none;
+        padding: 9px 24px;
+        font-size: 1.05em;
+        font-weight: bold;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.1s;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      }
+      .btn:hover {
+        background-color: #dbc285;
+        cursor: pointer;
+      }
+      .btn:active {
+        transform: scale(0.96);
+      }
+
+      .applause-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 40px; 
+        position: relative;
+      }
+
+      #clap-hint {
+        font-size: 0.85em;
+        color: #facc15;
+        letter-spacing: 1px;
+        opacity: 0.85;
+        margin-top: 4px;
+        text-shadow: 0 0 6px rgba(250, 204, 21, 0.4);
+      }
+
+      .applause-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.35), rgba(156, 123, 44, 0.35));
+        border: none;
+        color: #facc15;
+        font-size: 1.2em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        backdrop-filter: blur(4px);
+        transition: transform 0.15s ease, background 0.3s ease;
+      }
+      .applause-btn:hover {
+        transform: scale(1.1);
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.55), rgba(156, 123, 44, 0.55));
+      }
+      .applause-btn:active {
+        transform: scale(0.92);
+      }
+
+      #applause-fountain {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 200px;
+        height: 120px;
+        pointer-events: none;
+        overflow: visible;
+        z-index: 10;
+      }
+
+      .floating-clap {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        font-size: 1.4em;
+        animation: floatUpClap 1.2s ease-out forwards;
+      }
+
+      @keyframes floatUpClap {
+        0% {
+          transform: translate(-50%, 0) scale(0.5);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(calc(-50% + var(--random-x)), -100px) scale(1.3);
+          opacity: 0;
+        }
+      }
+
+      #fortune-result {
+        font-size: 1.25em;
+        color: #facc15;
+        font-weight: bold;
+        min-height: 35px;
+        margin-top: 2px;
+        letter-spacing: 2px;
+      }
+
+      .back-btn {
+        background-color: #334155;
+        color: #cbd5e1;
+        font-size: 0.85em;
+        padding: 5px 15px;
+      }
+      .back-btn:hover {
+        background-color: #475569;
+        cursor: pointer;
+      }
+
+      @media (max-width: 480px) {
+        .scene {
+          height: 100vh;
+          height: 100dvh;
+          border-radius: 0;
+          border: none;
+          padding: 15px 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="exterior" class="scene" style="justify-content: space-between;">
+      <div class="cloud cloud-top"><div class="cloud-puffs"></div></div>
+      <div class="cloud cloud-bottom"><div class="cloud-puffs"></div></div>
+
+      <div></div>
+
+      <div class="temple-house">
+        <div class="roof-wrapper">
+          <div class="temple-roof"></div>
+          <div class="roof-base"></div>
+        </div>
+        <div class="temple-body">
+          <div class="temple-plaque">~</div>
+          
+          <div class="temple-gate" onclick="enterTemple()">
+            <div class="gate-knocker-left"></div>
+            <div class="gate-knocker-right"></div>
+          </div>
+        </div>
+      </div>
+
+      <div></div>
+    </div>
+
+    <div id="interior" class="scene">
+      <div></div>
+
+      <div class="art-frame-container">
+        <div id="peacefulAura" class="peaceful-aura"></div>
+      </div>
+
+      <div class="aura-area">
+        <div class="aura-smoke-container">
+          <div class="smoke-particle"></div>
+          <div class="smoke-particle"></div>
+          <div class="smoke-particle"></div>
+          <div class="smoke-particle"></div>
+        </div>
+        <div class="incense-burner">
+          <div class="burner-rim"></div>
+          <div class="burner-body">
+            <div id="burnerGlow" class="hidden-glow-source"></div>
+          </div>
+          <div class="burner-feet">
+            <div class="burner-foot"></div>
+            <div class="burner-foot"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="interaction-area">
+        <button class="btn" onclick="consultOracle()">~ ? ~</button>
+        <div id="fortune-result"></div>
+
+        <div class="applause-section">
+          <div id="applause-fountain"></div>
+
+          <div class="applause-btn" onclick="applaudSelf()">👏</div>
+
+          <div id="clap-hint">Clap for yourself 👏</div>
+        </div>
+      </div>
+
+      <div>
+        <button class="btn back-btn" onclick="leaveTemple()">&lt;&lt;&lt;</button>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('dblclick', function(e) {
+        e.preventDefault();
+      }, { passive: false });
+
+      let clearTimer = null;
+
+      function enterTemple() {
+        const exterior = document.getElementById('exterior');
+        const interior = document.getElementById('interior');
+
+        exterior.style.transform = 'scale(1.05)';
+        exterior.style.opacity = '0';
+
+        setTimeout(() => {
+          exterior.style.display = 'none';
+          interior.style.display = 'flex';
+          interior.style.opacity = '0';
+          setTimeout(() => {
+            interior.style.opacity = '1';
+            exterior.style.transform = 'scale(1)';
+          }, 50);
+        }, 300);
+      }
+
+      function leaveTemple() {
+        const exterior = document.getElementById('exterior');
+        const interior = document.getElementById('interior');
+
+        if (clearTimer) clearTimeout(clearTimer);
+        document.getElementById("fortune-result").innerHTML = "";
+        
+        interior.style.opacity = '0';
+        setTimeout(() => {
+          interior.style.display = 'none';
+          exterior.style.display = 'flex';
+          exterior.style.opacity = '1';
+        }, 300);
+      }
+
+      function consultOracle() {
+        const answers = [
+          "~~~",
+          "~?~",
+          "?~?"
+        ];
+
+        const randomIndex = Math.floor(Math.random() * answers.length);
+        const resultDiv = document.getElementById("fortune-result");
+        const burnerGlow = document.getElementById("burnerGlow");
+
+        if (clearTimer) clearTimeout(clearTimer);
+
+        resultDiv.innerHTML = "";
+
+        burnerGlow.classList.remove('active-sensing');
+        void burnerGlow.offsetWidth; 
+        burnerGlow.classList.add('active-sensing');
+
+        const handleAnimationEnd = () => {
+          burnerGlow.classList.remove('active-sensing');
+          burnerGlow.removeEventListener('animationend', handleAnimationEnd);
+        };
+        burnerGlow.addEventListener('animationend', handleAnimationEnd);
+
+        setTimeout(() => {
+          const colorStyle = "#facc15"; 
+          resultDiv.innerHTML = "<span style='color: " + colorStyle + "; font-size: 1.25em;'>" + answers[randomIndex] + "</span>";
+
+          clearTimer = setTimeout(() => {
+            resultDiv.innerHTML = "";
+          }, 6000);
+        }, 600);
+      }
+
+      function applaudSelf() {
+        const fountain = document.getElementById("applause-fountain");
+
+        const clap = document.createElement('div');
+        clap.className = 'floating-clap';
+        clap.innerHTML = '👏';
+
+        const randomX = (Math.random() - 0.5) * 110 + 'px';
+        clap.style.setProperty('--random-x', randomX);
+
+        fountain.appendChild(clap);
+
+        setTimeout(() => {
+          clap.remove();
+        }, 1200);
+      }
+    </script>
+
+  </body>
+</html>
